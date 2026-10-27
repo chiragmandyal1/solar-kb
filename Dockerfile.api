@@ -1,0 +1,20 @@
+# API + the RAG pipeline in lib/. Built from the repo root: docker build -f Dockerfile.api .
+FROM node:24-slim AS build
+WORKDIR /app/api
+COPY api/package*.json ./
+RUN npm ci
+COPY api/tsconfig.json ./
+COPY api/src src
+RUN npx tsc -p tsconfig.json
+
+FROM node:24-slim
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci --omit=dev
+COPY lib lib
+COPY data data
+COPY api/package*.json api/
+RUN cd api && npm ci --omit=dev
+COPY --from=build /app/api/dist api/dist
+ENV NODE_ENV=production PORT=3100
+CMD ["node", "api/dist/main.js"]

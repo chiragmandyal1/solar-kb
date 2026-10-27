@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Solar-kb">
+  <defs>
+    <radialGradient id="sun" cx="40%" cy="38%" r="70%">
+      <stop offset="0" stop-color="#FFD98A"/>
+      <stop offset="0.55" stop-color="#F5B54A"/>
+      <stop offset="1" stop-color="#E8851C"/>
+    </radialGradient>
+    <radialGradient id="glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0" stop-color="#F5B54A" stop-opacity="0.45"/>
+      <stop offset="1" stop-color="#F5B54A" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="planet" cx="35%" cy="32%" r="75%">
+      <stop offset="0" stop-color="#7DB8FF"/>
+      <stop offset="1" stop-color="#2F6FD1"/>
+    </radialGradient>
+  </defs>
+  <rect width="512" height="512" rx="112" fill="#02040C"/>
+  <circle cx="256" cy="256" r="210" fill="url(#glow)"/>
+  <!-- orbit tilted -18deg: back half behind the sun, front half and the planet in front of it -->
+  <clipPath id="back"><rect x="0" y="0" width="512" height="256"/></clipPath>
+  <clipPath id="front"><rect x="0" y="256" width="512" height="256"/></clipPath>
+  <g transform="rotate(-18 256 256)">
+    <ellipse cx="256" cy="256" rx="196" ry="84" fill="none" stroke="#C8D7FF" stroke-opacity="0.55" stroke-width="6" clip-path="url(#back)"/>
+  </g>
+  <circle cx="256" cy="256" r="98" fill="url(#sun)"/>
+  <g transform="rotate(-18 256 256)">
+    <ellipse cx="256" cy="256" rx="196" ry="84" fill="none" stroke="#C8D7FF" stroke-opacity="0.55" stroke-width="6" clip-path="url(#front)"/>
+    <circle cx="434" cy="292" r="30" fill="url(#planet)"/>
+  </g>
+  <g fill="#E8EAF2">
+    <circle cx="92" cy="104" r="5" opacity="0.9"/>
+    <circle cx="150" cy="60" r="3" opacity="0.6"/>
+    <circle cx="420" cy="420" r="4" opacity="0.7"/>
+    <circle cx="70" cy="430" r="3" opacity="0.5"/>
+  </g>
+</svg>

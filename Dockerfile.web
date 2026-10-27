@@ -1,0 +1,13 @@
+# Builds the React page and serves it with Caddy, which also forwards /api to the API and handles HTTPS.
+FROM node:24-slim AS build
+WORKDIR /web
+COPY web/package*.json ./
+RUN npm ci
+COPY web .
+ARG VITE_GOOGLE_CLIENT_ID
+ENV VITE_GOOGLE_CLIENT_ID=$VITE_GOOGLE_CLIENT_ID
+RUN npm run build
+
+FROM caddy:2-alpine
+COPY --from=build /web/dist /srv
+COPY Caddyfile /etc/caddy/Caddyfile

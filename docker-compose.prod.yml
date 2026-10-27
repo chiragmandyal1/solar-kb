@@ -1,0 +1,54 @@
+# Production stack: docker compose -f docker-compose.prod.yml up -d --build
+# Needs a .env next to it (see .env.example) plus DB_PASSWORD and DOMAIN.
+services:
+  db:
+    image: pgvector/pgvector:pg17
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?set DB_PASSWORD in .env}
+      POSTGRES_DB: solarkb
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d solarkb"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      DATABASE_URL: postgres://postgres:${DB_PASSWORD}@db:5432/solarkb
+      TRUST_PROXY: "1"
+    volumes:
+      # the embedding model (~130 MB) downloads on first use; keep it across rebuilds
+      - model-cache:/app/node_modules/@huggingface/transformers/.cache
+    depends_on:
+      db: { condition: service_healthy }
+
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile.web
+      args:
+        VITE_GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID:-}
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      DOMAIN: ${DOMAIN:-:80}
+    volumes:
+      - caddy-data:/data
+    depends_on:
+      - api
+
+volumes:
+  pgdata:
+  model-cache:
+  caddy-data:

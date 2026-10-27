@@ -1,6 +1,7 @@
-import { useCallback, useEffect, useState } from "react";
-import { ask, getTopics, type Answer, type Topics } from "./api";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { Busy, LimitReached, ask, getMe, getTopics, signIn, signOut, type Answer, type Me, type Topics } from "./api";
 import { STARTERS, byId } from "./bodies";
+import { Profile } from "./Profile";
 import { Scene } from "./Scene";
 import { TopicPanel, moonNames } from "./TopicPanel";
 
@@ -28,23 +29,52 @@ export function App() {
   const [asked, setAsked] = useState("");
   const [answer, setAnswer] = useState<Answer | null>(null);
   const [busy, setBusy] = useState(false);
+  const [wait, setWait] = useState(0); // seconds left before an automatic retry
   const [error, setError] = useState("");
+  const [me, setMe] = useState<Me | null>(null);
+  const run = useRef(0); // id of the latest question; an older one that finishes late is ignored
 
-  useEffect(() => { getTopics().then(setTopics).catch((e) => setError(e.message)); }, []);
+  useEffect(() => {
+    getTopics().then(setTopics).catch((e) => setError(e.message));
+    getMe().then(setMe).catch(() => {});
+  }, []);
 
-  // an answer belongs to the place it zoomed to: navigating elsewhere drops it
-  const clearAnswer = () => { setAnswer(null); setAsked(""); setError(""); };
+  // an answer belongs to the place it zoomed to: navigating elsewhere drops it (and cancels one still loading)
+  const clearAnswer = () => { run.current++; setBusy(false); setWait(0); setAnswer(null); setAsked(""); setError(""); };
+
+  const onCredential = useCallback(async (c: string) => {
+    try { setMe(await signIn(c)); setError(""); } catch (e) { setError((e as Error).message); }
+  }, []);
+  const onSignOut = useCallback(async () => { await signOut(); setMe(await getMe()); }, []);
   const pick = useCallback((id: string) => { setFocus({ body: id, moon: null }); setOpen(id); clearAnswer(); }, []);
-  const home = useCallback(() => { setFocus(null); clearAnswer(); }, []);
+  const home = useCallback(() => { setFocus(null); setOpen(null); clearAnswer(); }, []);
 
   const send = useCallback(async (q: string, moonOf?: { body: string; moon: string }) => {
     q = q.trim();
     if (!q || busy) return;
     if (moonOf) { setFocus(moonOf); setOpen(moonOf.body); }
+    const id = ++run.current;
     setAnswer(null); setBusy(true); setError(""); setAsked(q); setText(""); setDrawer(false);
     try {
-      const a = await ask(q);
+      // the model has a per-minute limit: on "busy" count down and retry, up to 3 times
+      let a: Answer | undefined;
+      for (let i = 0; !a; i++) {
+        try {
+          a = await ask(q);
+        } catch (e) {
+          if (!(e instanceof Busy)) throw e;
+          if (i === 3) throw new Error("Lots of people are asking right now. Try again in a minute.");
+          for (let s = Math.min(e.retryAfter, 30) + 1; s > 0; s--) {
+            if (run.current !== id) return;
+            setWait(s);
+            await new Promise((r) => setTimeout(r, 1000));
+          }
+          setWait(0);
+        }
+      }
+      if (run.current !== id) return; // user moved on while it loaded
       setAnswer(a);
+      setMe((m) => (m ? { ...m, limit: a.limit } : m));
       const body = a.focus?.body;
       if (body && byId[body]) {
         const sub = a.focus?.subject?.toLowerCase();
@@ -53,9 +83,17 @@ export function App() {
         setOpen(body);
       }
     } catch (e) {
-      setError((e as Error).message);
+      if (run.current !== id) return;
+      if (e instanceof LimitReached && e.site) {
+        setError("Today's question limit for the whole site has been used up. Please come back tomorrow.");
+      } else if (e instanceof LimitReached) {
+        setMe((m) => (m ? { ...m, limit: { ...m.limit, used: e.max, max: e.max, remaining: 0 } } : m));
+        setError(e.loggedIn ? `You've used all ${e.max} questions for today. Come back tomorrow.` : `You've used your ${e.max} free questions. Sign in with Google (top right) to ask up to 50 a day.`);
+      } else {
+        setError((e as Error).message);
+      }
     } finally {
-      setBusy(false);
+      if (run.current === id) setBusy(false);
     }
   }, [busy, topics]);
 
@@ -80,6 +118,8 @@ export function App() {
         onPick={pick}
         onMoon={(m) => focus && send(`Tell me about ${m}`, { body: focus.body, moon: m })}
       />
+
+      <Profile me={me} narrow={narrow} onCredential={onCredential} onSignOut={onSignOut} />
 
       {narrow && (
         <button className="menu-btn" aria-label="Show topics" onClick={() => setDrawer(true)}>
@@ -120,6 +160,12 @@ export function App() {
         </>
       )}
 
+      <footer className="credit">
+        Built by <a href="https://chiragmandyal.vercel.app" target="_blank" rel="noreferrer">Chirag Mandyal</a>
+        <span className="long"> · Answers from NASA’s public pages (<a href="https://science.nasa.gov" target="_blank" rel="noreferrer">science.nasa.gov</a>), not affiliated with or endorsed by NASA</span>
+        <span className="short"> · Data: NASA, not affiliated</span>
+      </footer>
+
       <main className="chat">
         {!fb && <h1>Ask the solar system</h1>}
         {!fb && <p className="hint">Click any body or ask a question to zoom in</p>}
@@ -127,7 +173,7 @@ export function App() {
         {(answer || busy || error) && (
           <section className="answer glass" aria-label="Answer" aria-live="polite">
             {asked && <span className="q">{asked}</span>}
-            {busy ? <p className="thinking">Searching NASA’s pages…</p> : error ? <p className="err">{error}</p> : answer && (
+            {busy ? <p className="thinking">{wait > 0 ? `Busy right now, retrying in ${wait}s…` : "Searching NASA’s pages…"}</p> : error ? <p className="err">{error}</p> : answer && (
               <>
                 <p>{answer.answer}</p>
                 {answer.sources.length > 0 && (

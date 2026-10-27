@@ -1,0 +1,18 @@
+# a real domain in DOMAIN gets an automatic HTTPS certificate; ":80" (the default set in compose) serves plain HTTP
+{$DOMAIN} {
+	encode gzip
+	handle /api/* {
+		uri strip_prefix /api
+		reverse_proxy api:3100
+	}
+	handle {
+		# the page must always be fetched fresh; the hashed files under /assets never change
+		@page not path /assets/* /*.png /*.svg /*.jpg
+		header @page Cache-Control "no-cache"
+		@assets path /assets/*
+		header @assets Cache-Control "public, max-age=31536000, immutable"
+		root * /srv
+		try_files {path} /index.html
+		file_server
+	}
+}

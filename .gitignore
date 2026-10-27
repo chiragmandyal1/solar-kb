@@ -5,6 +5,7 @@ node_modules/
 .env
 .env.*
 !.env.example
+.deploy.env
 
 # generated / temporary
 debug/
@@ -17,3 +18,8 @@ npm-debug.log*
 .DS_Store
 .vscode/
 .idea/
+
+# private working notes (kept on disk, not published)
+TODO.md
+PLAN.md
+PROGRESS.md
