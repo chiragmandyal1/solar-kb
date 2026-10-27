@@ -1,0 +1,19 @@
+# dependencies
+node_modules/
+
+# secrets (API keys) - copy .env.example to .env instead
+.env
+.env.*
+!.env.example
+
+# generated / temporary
+debug/
+.tmp/
+eval-results.json
+*.log
+npm-debug.log*
+
+# OS / editor
+.DS_Store
+.vscode/
+.idea/

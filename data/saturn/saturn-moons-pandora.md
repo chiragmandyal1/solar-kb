@@ -1,0 +1,22 @@
+---
+title: "Pandora - NASA Science"
+source_url: https://science.nasa.gov/saturn/moons/pandora/
+body: saturn
+subject: pandora
+type: moon
+date: 
+fetched_at: 2026-10-26T10:39:14.539Z
+---
+# Pandora - NASA Science
+
+Pandora was discovered in October 1980 by the Voyager 1 science team.
+
+Pandora, a potato-shaped moon, is coated in a fine (dust-sized) icy material. Even the craters on Pandora are coated in debris, a stark contrast to the crisply-defined craters of other moons, such as Hyperion. Curious grooves and ridges also appear to cross the surface of the small moon.
+
+Pandora is interesting because it tends to disrupt the F ring, while Prometheus helps to keep the primary ring in place.
+
+Pandora is about 25.3 miles (40.7 kilometers) in mean radius. It orbits 88,000 miles (142,000 kilometers) away from Saturn, near the F ring, taking 15.1 hours to go around Saturn.
+
+Moons of Saturn were originally named for Greco-Roman Titans and descendants of the Titans. But as many new moons were discovered scientists began selecting names from more mythologies, including Gallic, Inuit and Norse stories.
+
+Originally called S/1980 S26, Pandora was renamed in 1985. In mythology, Pandora (pan-DOR-uh) was a work of art who was transformed into a human by the gods. Her curiosity was said to have loosed all manner of ills upon the world when she let evil creatures out of a locked box; however, she is also responsible for hope entering the world ("hope" had been the last "creature" in the box).

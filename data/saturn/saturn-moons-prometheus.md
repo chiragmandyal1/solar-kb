@@ -1,0 +1,20 @@
+---
+title: "Prometheus - NASA Science"
+source_url: https://science.nasa.gov/saturn/moons/prometheus/
+body: saturn
+subject: prometheus
+type: moon
+date: 
+fetched_at: 2026-10-26T10:39:12.245Z
+---
+# Prometheus - NASA Science
+
+The Voyager 1 science team discovered Prometheus in October 1980.
+
+Prometheus acts as a shepherding moon, constraining the extent of the inner edge of Saturn's F Ring. Prometheus is extremely irregular and has visible craters — some up to 12.4 miles (20 kilometers) in diameter. However, it is much less cratered than its nearby neighbors Pandora, Janus and Epimetheus. The density of Prometheus has been estimated to be low; it is probably a porous, icy body.
+
+The potato-shaped moon is about 26.8 miles (43.1 kilometers) in mean radius, orbiting Saturn at a distance of 87,000 miles (139,000 kilometers), taking 14.7 hours to go around the planet.
+
+Moons of Saturn were originally named for Greco-Roman Titans and descendants of the Titans. But as many new moons were discovered scientists began selecting names from more mythologies, including Gallic, Inuit and Norse stories.
+
+Originally designated S/1980 S27, Prometheus \[pro-MEE-thee-us\] is named for the son of the Titan Iapetus and brother of Atlas and Epimetheus. He is best known in Greek mythology for stealing fire from the gods and giving it to humanity.
