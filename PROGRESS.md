@@ -1,6 +1,6 @@
 # PROGRESS — solar-kb
 
-Updated: 26 Oct 2026 (evening)
+Updated: 27 Oct 2026
 
 ## Current state
 - Plan decided: PLAN.md (also saved in claude.ai Career project, knowledge-base-project/PLAN.md).
@@ -24,3 +24,6 @@ Updated: 26 Oct 2026 (evening)
 - `npm run eval`: 30/30 pass on Groq qwen/qwen3.8-27b. Real questions score 0.65-0.88; off-topic 0.49-0.69. Exoplanet traps (0.68-0.69) pass the score check and are refused by the prompt rule.
 - MIN_SCORE lowered 0.65 -> 0.60: the Great Red Spot question scored exactly 0.65.
 - Groq free tier rate-limits after ~4 answers a minute (waits of 4-32 s); real answer time is under 1 s.
+
+## Repo
+- Pushed to GitHub: chiragmandyal1/solar-kb, first commit 1b1a77a (27 Oct 2026). .env, node_modules, debug/ and eval-results.json are ignored; data/ is committed.

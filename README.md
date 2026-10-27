@@ -1,6 +1,9 @@
 # solar-kb
 
-Solar system knowledge base (RAG) — portfolio project. Full plan: `PLAN.md`.
+Ask questions about the solar system and get cited answers from NASA's own pages.
+RAG pipeline: NASA pages → chunks → Postgres + pgvector → open LLM (Groq, or local Ollama). Off-topic questions are refused.
+
+Full plan: `PLAN.md` · status: `PROGRESS.md` · next work: `TODO.md`.
 
 ## Step 1: download the data
 
@@ -44,3 +47,13 @@ npm run ask -- --models          # models your key can use
 - Settings live in `.env` (not committed; copy `.env.example`): model URL, key, model name, `MIN_SCORE` cut-off.
 - If the best match scores below `MIN_SCORE`, it answers "not in my documents" without calling the model.
 - To run fully local: `LLM_BASE_URL=http://localhost:11434/v1`, `LLM_API_KEY=ollama`, `LLM_MODEL=qwen3:30b` (needs Ollama).
+
+## Step 4: test it
+
+```bash
+npm run eval          # runs the 30 questions in tests.json, prints PASS/FAIL
+```
+
+- A question passes if the answer has the expected facts, cites a source and zooms to the right planet, or correctly refuses.
+- Full answers are saved to `eval-results.json` (not committed).
+- Last run: 30/30 (27 Oct 2026).

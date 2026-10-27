@@ -29,9 +29,9 @@ Portfolio project. Upload documents → ask questions → answers come only from
 | Front end | Three.js solar system; model returns `{answer, planet}` and the view zooms to that planet | Visual hook for the portfolio |
 | Backend | NestJS | Already known |
 | Vector DB | Postgres + pgvector | One DB for users, limits, logs and vectors. Handles millions of chunks. Scale later: pgvectorscale or Qdrant |
-| Model (live demo) | Groq or Gemini free API, mid-size open model (~30B, e.g. Qwen3-30B) | $0; same open model a client could run locally |
+| Model (live demo) | Groq free API, `qwen/qwen3.8-27b` (open, mid-size) | $0; same open model a client could run locally on 32 GB |
 | Model (local mode) | Ollama — only when a client asks, config change only | Private, nothing leaves the machine |
-| Embeddings | Gemini free embeddings or transformers.js in Node | No GPU needed on server |
+| Embeddings | `Xenova/bge-small-en-v1.5` via transformers.js in Node (384 dims) | No GPU, no API key, same on Mac and server |
 | Hosting | Oracle Cloud free tier | Always on, $0 |
 | Access | Google login, 3–4 questions per user + global daily cap (~200) | Protects free API quota |
 
@@ -53,6 +53,6 @@ Portfolio project. Upload documents → ask questions → answers come only from
 - Moved to TODO.md. Status lives in PROGRESS.md.
 
 ## Timeline
-- Weekend 1: AnythingLLM + Ollama to see a working version.
-- Weekends 2–3: build own pipeline (steps 0–5).
-- Then: deploy, test set, polish README.
+- Done (26-27 Oct): data, indexing, search, ask, eval (30/30).
+- Next: web app (NestJS API + chat page), then Three.js view, then login + limits, then deploy.
+- AnythingLLM step was skipped: built the pipeline directly instead.
