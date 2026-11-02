@@ -1,3 +1,10 @@
+{
+	# behind another proxy (the shared edge Caddy): keep the visitor IP it forwards, so per-IP limits see real visitors
+	servers {
+		trusted_proxies static private_ranges
+	}
+}
+
 # a real domain in DOMAIN gets an automatic HTTPS certificate; ":80" (the default set in compose) serves plain HTTP
 {$DOMAIN} {
 	encode gzip

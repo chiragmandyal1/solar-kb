@@ -128,6 +128,9 @@ export function App() {
       )}
       {narrow && drawer && <div className="scrim" onClick={() => setDrawer(false)} />}
       <aside className={"topics glass" + (drawer ? " show" : "")} aria-label="Topics in this dataset">
+        <button className="drawer-close" aria-label="Close topics" onClick={() => setDrawer(false)}>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M6 6l12 12M18 6L6 18" /></svg>
+        </button>
         <TopicPanel
           topics={topics}
           focus={focus?.body ?? null}
@@ -168,7 +171,12 @@ export function App() {
 
       <main className="chat">
         {!fb && <h1>Ask the solar system</h1>}
-        {!fb && <p className="hint">Click any body or ask a question to zoom in</p>}
+        {!fb && (
+          <p className="hint">
+            <span className="long">Click any body or ask a question to zoom in</span>
+            <span className="short">Swipe sideways · tap a planet to zoom in</span>
+          </p>
+        )}
 
         {(answer || busy || error) && (
           <section className="answer glass" aria-label="Answer" aria-live="polite">

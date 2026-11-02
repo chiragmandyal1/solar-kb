@@ -1,0 +1,18 @@
+# Used on the shared server, where one Caddy (~/edge) owns ports 80/443 for every app and does the HTTPS:
+#   docker compose -f docker-compose.prod.yml -f docker-compose.edge.yml up -d --build
+# Needs the external network once:  docker network create edge
+services:
+  api:
+    environment:
+      TRUST_PROXY: "2" # edge Caddy -> web Caddy -> api: the visitor is two hops back
+  web:
+    ports: !reset []
+    environment:
+      DOMAIN: ":80"
+    networks:
+      default: {}
+      edge: { aliases: [solarkb-web] }
+
+networks:
+  edge:
+    external: true

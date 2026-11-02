@@ -11,16 +11,19 @@
 * { box-sizing: border-box; }
 html, body, #root { height: 100%; margin: 0; }
 body { background: var(--bg); color: var(--text); font-family: Inter, system-ui, sans-serif; overflow: hidden; }
-button { font: inherit; color: inherit; cursor: pointer; }
+button { font: inherit; color: inherit; cursor: pointer; touch-action: manipulation; }
+* { -webkit-tap-highlight-color: transparent; }
+html, body { overscroll-behavior: none; }
+.scene canvas { touch-action: none; user-select: none; -webkit-user-select: none; }
 a { color: #c9cedd; } a:hover { color: #fff; }
 .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
 .mono { font-family: var(--mono); font-size: 11px; color: #b9bfd2; }
 
 .app { position: fixed; inset: 0; }
-.scene { position: absolute !important; inset: 0; }
+.scene { position: absolute !important; inset: 0; z-index: 0; } /* own stacking level: the 3D labels stay below the panels */
 .glass { background: var(--glass); border: 1px solid var(--line); backdrop-filter: blur(16px) saturate(1.2); -webkit-backdrop-filter: blur(16px) saturate(1.2); }
 
-.labels { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+.labels { position: absolute; inset: 0; pointer-events: none; overflow: hidden; z-index: 1; }
 .body-label, .moon-label { font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: #b9bfd2; text-shadow: 0 1px 6px #000; white-space: nowrap; }
 .body-label.dim { opacity: 0.5; }
 .moon-label { text-transform: none; letter-spacing: 0.04em; color: #d4d8e4; }
@@ -63,6 +66,11 @@ a { color: #c9cedd; } a:hover { color: #fff; }
 .compact .topics-list { padding-bottom: 12px; }
 .compact .crumb { left: 204px; }
 .compact .chat { left: 204px; }
+
+/* loading + phone-only bits */
+.loading { position: absolute; left: 50%; top: 38%; transform: translate(-50%, -50%); font-size: 12px; letter-spacing: .16em; text-transform: uppercase; color: var(--muted); z-index: 2; transition: opacity .6s; pointer-events: none; white-space: nowrap; }
+.loading.done { opacity: 0; }
+.hint .short, .drawer-close { display: none; }
 
 /* credit line */
 .credit { position: absolute; left: 332px; right: 16px; bottom: 10px; text-align: center; font-size: 11px; color: #7f86a0; z-index: 4; pointer-events: none; line-height: 1.4; }
@@ -122,7 +130,7 @@ a { color: #c9cedd; } a:hover { color: #fff; }
 .menu-btn { display: none; }
 .narrow .menu-btn { display: flex; position: absolute; left: 12px; top: 12px; width: 40px; height: 40px; align-items: center; justify-content: center; border-radius: 20px; border: 1px solid var(--line); background: var(--glass); backdrop-filter: blur(14px); z-index: 6; }
 .narrow .scrim { position: absolute; inset: 0; background: rgba(0,0,0,.5); z-index: 7; }
-.narrow .topics { left: 0; top: 0; bottom: 0; width: min(88vw, 340px); border-radius: 0 22px 22px 0; transform: translateX(-105%); transition: transform .3s; z-index: 8; background: rgba(8,10,20,.85); }
+.narrow .topics { left: 0; top: 0; bottom: 0; width: min(88vw, 340px); border-radius: 0 22px 22px 0; transform: translateX(-105%); transition: transform .3s; z-index: 8; background: rgba(8,10,20,.96); }
 .narrow .topics.show { transform: none; }
 .narrow .profile { right: 12px; top: 12px; min-height: 44px; padding: 3px 6px 3px 3px; gap: 6px; }
 .narrow .profile .avatar { width: 34px; height: 34px; }
@@ -138,4 +146,13 @@ a { color: #c9cedd; } a:hover { color: #fff; }
 .narrow .starters button small { display: none; }
 .narrow .starters button:nth-of-type(n+4) { display: none; }
 @media (max-height: 560px) { .narrow .starters, .narrow .hint { display: none; } }
+/* phone: 16px inputs (iOS zooms the page on smaller ones), bigger tap targets, a way to close the drawer */
+.narrow .ask input, .narrow .topics-head input { font-size: 16px; }
+.narrow .body-label, .narrow .moon-label { font-size: 9.5px; letter-spacing: .05em; }
+.narrow .hint .long { display: none; }
+.narrow .hint .short { display: inline; }
+.narrow .menu-btn { width: 44px; height: 44px; border-radius: 22px; }
+.narrow .pill { height: 38px; }
+.narrow .drawer-close { display: flex; position: absolute; right: 12px; top: 14px; width: 40px; height: 40px; align-items: center; justify-content: center; border-radius: 20px; border: 1px solid var(--line); background: rgba(255,255,255,.06); color: var(--muted); z-index: 2; }
+.narrow .loading { top: 30%; }
 @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
